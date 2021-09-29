@@ -31,11 +31,23 @@ const actions = {
       })
   },
 
+  [TRANSLATE_TEXT](context, params) {
+    return ApiService.post("/translate", params)
+      .then(({ data }) => {
+        context.commit(CHANGE_TRANSLATED_TEXT);
+        return data;
+      })
+  }
+
 };
 
 const mutations = {
   [SET_LANGUAGES](state: TranslateState, languagesList: Language[]) {
     state.languages = languagesList;
+  },
+
+  [CHANGE_TRANSLATED_TEXT](state: TranslateState, newText) {
+    state.translatedText = newText.translatedText;
   }
 };
 
