@@ -1,13 +1,15 @@
 import ApiService from "../common/api-service";
 import {
     FETCH_LANGUAGES,
-    TRANSLATE_TEXT
+    TRANSLATE_TEXT,
+    DETECT_LANGUAGE
 } from "./actions.type";
-import { CHANGE_TRANSLATED_TEXT, SET_LANGUAGES } from "./mutations.type";
+import { CHANGE_TRANSLATED_TEXT, SET_LANGUAGES, SET_ACTUAL_LANGUAGE } from "./mutations.type";
 
 const state = {
   languages: [],
-  translatedText: ""
+  translatedText: "",
+  actualLanguage: ""
 };
 
 const getters = {
@@ -36,6 +38,14 @@ const actions = {
         context.commit(CHANGE_TRANSLATED_TEXT)
         return data;
       })
+  },
+
+  [DETECT_LANGUAGE](context, params) {
+    return ApiService.post("/detect", { q: params })
+      .then(({ data }) => {
+        context.commit(SET_ACTUAL_LANGUAGE, data)
+        return data;
+      })
   }
 
 };
@@ -45,9 +55,13 @@ const mutations = {
     state.languages = languagesList;
   },
 
+  [SET_ACTUAL_LANGUAGE](state, actualLanguage) {
+    state.actualLanguage = actualLanguage.language;
+  },
+
   [CHANGE_TRANSLATED_TEXT](state, newText) {
     state.translatedText = newText.translatedText
-  }
+  },
 };
 
 export default {

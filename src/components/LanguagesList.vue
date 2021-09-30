@@ -2,7 +2,7 @@
     <div id="language-list">
         <div class="listContainer">
             <div class="languageContainer" v-for="language in languages" v-bind:key="language.code">
-                <span class="languageName" :click="selectLanguage(language.code)"> {{ language.name }} </span>
+                <span class="languageName" v-on:click="selectLanguage(language.code)"> {{ language.name }} </span>
             </div>
         </div>
     </div> 
