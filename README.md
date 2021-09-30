@@ -1,4 +1,4 @@
-# vue_project
+# Aplicação para estudo de Vue.js
 
 ## Project setup
 ```
