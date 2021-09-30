@@ -2,7 +2,12 @@
     <div id="language-list">
         <div class="listContainer">
             <div class="languageContainer" v-for="language in languages" v-bind:key="language.code">
-                <span class="languageName" v-on:click="selectLanguage(language.code)"> {{ language.name }} </span>
+                <span 
+                    v-bind:class="((targetLanguage === language.code) || (actualLanguage === language.code)) ? 'selectedLanguage' : 'languageName'" 
+                    @click="selectLanguage(language.code)"
+                > 
+                    {{ language.name }} 
+                </span>
             </div>
         </div>
     </div> 
@@ -10,18 +15,16 @@
 
 <script>
 
-import { FETCH_LANGUAGES } from "../store/actions.type";
+import { FETCH_LANGUAGES, TARGET_LANGUAGE, ACTUAL_LANGUAGE } from "../store/actions.type";
 import { mapGetters } from 'vuex'
 
 export default {
     name: 'LanguagesList',
-    data() {
-        return {
-            selectedLanguage: String
-        }
+    props: {
+        isTarget: Boolean
     },
     computed: {
-        ...mapGetters(["languages", "specificLanguage"])
+        ...mapGetters(["languages", "targetLanguage", "actualLanguage"])
     },
     mounted() {
         this.fetchLanguages();
@@ -30,8 +33,20 @@ export default {
         fetchLanguages() {
             this.$store.dispatch(FETCH_LANGUAGES);
         },
-        selectLanguage(language) {
-            this.selectedLanguage = language;
+
+        checkLanguages() {
+            return (!this.actualLanguage || !this.targetLanguage);
+        },
+
+        setAction() {
+            return !this.isTarget ? ACTUAL_LANGUAGE : TARGET_LANGUAGE;
+        },
+
+        selectLanguage(language) {  
+            if(this.checkLanguages()) {
+                this.$emit('pick-language', language);
+                this.$store.dispatch(this.setAction(), language);
+            }
         }
     }
 }
@@ -43,6 +58,7 @@ export default {
         justify-content: center; 
         display: flex; 
         padding: 2%;
+        font-size: 20px;
     }
     .languageContainer {
         border-right-style: double;
@@ -55,5 +71,11 @@ export default {
     }
     .languageName {
         margin: 10px;
+    }
+    .selectedLanguage {
+        font-weight: bold;
+        color: darkviolet;
+        margin: 10px;
+
     }
 </style>

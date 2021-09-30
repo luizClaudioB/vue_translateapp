@@ -2,14 +2,17 @@ import ApiService from "../common/api-service";
 import {
     FETCH_LANGUAGES,
     TRANSLATE_TEXT,
-    DETECT_LANGUAGE
+    DETECT_LANGUAGE,
+    TARGET_LANGUAGE,
+    ACTUAL_LANGUAGE
 } from "./actions.type";
-import { CHANGE_TRANSLATED_TEXT, SET_LANGUAGES, SET_ACTUAL_LANGUAGE } from "./mutations.type";
+import { CHANGE_TRANSLATED_TEXT, SET_LANGUAGES, SET_ACTUAL_LANGUAGE, SET_TARGET_LANGUAGE } from "./mutations.type";
 
 const state = {
   languages: [],
   translatedText: "",
-  actualLanguage: ""
+  actualLanguage: "",
+  targetLanguage: ""
 };
 
 const getters = {
@@ -17,8 +20,20 @@ const getters = {
     return state.languages;
   },
 
-  specificLanguage(state, code) {
+  specificLanguage: (state) => (code) => {
       return state.languages.find((i) => i.code === code)
+  },
+
+  actualLanguage(state) {
+    return state.actualLanguage;
+  },
+
+  targetLanguage(state) {
+    return state.targetLanguage;
+  },
+
+  translatedText(state) {
+    return state.translatedText;
   }
 };
 
@@ -33,9 +48,9 @@ const actions = {
   },
 
   [TRANSLATE_TEXT](context, params) {
-    return ApiService.post("/translate", params)
+    return ApiService.post("/translate", { q: params, source: state.actualLanguage, target: state.targetLanguage })
       .then(({ data }) => {
-        context.commit(CHANGE_TRANSLATED_TEXT)
+        context.commit(CHANGE_TRANSLATED_TEXT, data)
         return data;
       })
   },
@@ -46,6 +61,18 @@ const actions = {
         context.commit(SET_ACTUAL_LANGUAGE, data)
         return data;
       })
+  },
+
+  [ACTUAL_LANGUAGE](context, params) {
+    if(params)
+    context.commit(SET_ACTUAL_LANGUAGE, params);
+    return params;
+  },
+
+  [TARGET_LANGUAGE](context, params) {
+    if(params)
+    context.commit(SET_TARGET_LANGUAGE, params)
+    return params;
   }
 
 };
@@ -56,11 +83,15 @@ const mutations = {
   },
 
   [SET_ACTUAL_LANGUAGE](state, actualLanguage) {
-    state.actualLanguage = actualLanguage.language;
+    state.actualLanguage = actualLanguage;
+  },
+
+  [SET_TARGET_LANGUAGE](state, targetLanguage) {
+    state.targetLanguage = targetLanguage; 
   },
 
   [CHANGE_TRANSLATED_TEXT](state, newText) {
-    state.translatedText = newText.translatedText
+    state.translatedText = newText.translatedText;
   },
 };
 

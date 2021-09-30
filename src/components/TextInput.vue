@@ -1,45 +1,56 @@
 <template>
     <div id="text-input">
-        <div>
-            <input inputmode="latin" />
-            <button v-on:click="detectLanguage()"> Translate! </button>
+        <div id="text-input-container">
+            <textarea v-model="actualText" spellcheck="false" inputmode="latin" rows=10 cols="70" wrap="soft"> </textarea>
+            <TranslateButton :text="actualText"> GO! </TranslateButton>
+            <textarea v-model="translatedText" readonly="writable" inputmode="latin" rows=10 cols="70" wrap="soft"> </textarea>
         </div>
-    </div> 
+    </div>
 </template>
 
 <script>
 
-import { DETECT_LANGUAGE } from "../store/actions.type";
-
+import TranslateButton from "./TranslateButton.vue"
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'TextInputComponent',
-    methods: {
-        detectLanguage() {
-            if(document.querySelector('input'))
-            this.$store.dispatch(DETECT_LANGUAGE, document.querySelector('input').value);
+    data() {
+        return {
+            actualText: ""
         }
+    },
+    components: {
+        TranslateButton
+    },
+    computed: {
+        ...mapGetters(["translatedText"])
     }
 }
 
 </script>
 
-<style>
-    /* .listContainer {
-        justify-content: center; 
-        display: flex; 
-        padding: 2%;
+<style lang="scss">
+    @import "~@fontsource/abel/index.css";
+    div#text-input-container {
+        display: flex;
+        justify-content: center;
     }
-    .languageContainer {
-        border-right-style: double;
-        border-right-color: violet;
-        opacity: 0.6;
-        transition: 0.3s;
+    textarea {
+        resize: none;
+        border-style: none; 
+        overflow: auto; 
+        border-color: aliceblue;
+        box-shadow: 0 0 2px black;
+        font-size: 18px;
+        font-family: "abel";
+        padding: 1%;
     }
-    .languageContainer:hover {
-        opacity: 1;
+    textarea:focus {
+        border-color: aliceblue;
+        resize: none;
+        border-style: none; 
+        overflow: auto; 
+        outline: none;
     }
-    .languageName {
-        margin: 10px;
-    } */
 </style>
