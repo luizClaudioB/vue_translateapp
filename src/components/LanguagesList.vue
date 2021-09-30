@@ -1,8 +1,9 @@
 <template>
-    <div id="link-tree-items">
-        <span> Idiomas suportados: </span>
-        <div v-for="language in languages" v-bind:key="language">
-            <span :click="selectLanguage(language.code)"> {{ language.name }} </span>
+    <div id="language-list">
+        <div class="listContainer">
+            <div class="languageContainer" v-for="language in languages" v-bind:key="language.code">
+                <span class="languageName" :click="selectLanguage(language.code)"> {{ language.name }} </span>
+            </div>
         </div>
     </div> 
 </template>
@@ -20,11 +21,6 @@ export default {
         }
     },
     computed: {
-        initSelectedLanguage() {
-            if(!this.selectedLanguage && this.languages) {
-                this.selectedLanguage = this.specificLanguage("en")
-            }
-        },
         ...mapGetters(["languages", "specificLanguage"])
     },
     mounted() {
@@ -41,3 +37,23 @@ export default {
 }
 
 </script>
+
+<style>
+    .listContainer {
+        justify-content: center; 
+        display: flex; 
+        padding: 2%;
+    }
+    .languageContainer {
+        border-right-style: double;
+        border-right-color: violet;
+        opacity: 0.6;
+        transition: 0.3s;
+    }
+    .languageContainer:hover {
+        opacity: 1;
+    }
+    .languageName {
+        margin: 10px;
+    }
+</style>

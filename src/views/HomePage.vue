@@ -1,5 +1,6 @@
 <template>
     <div class="homePage">
+        <span class="titleStyle"> Translation Point </span>
         <LanguagesList></LanguagesList>
     </div>
 </template>
@@ -13,3 +14,13 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+    @import "~@fontsource/abel/index.css";
+    .homePage {
+        font-family: "abel"; 
+    }
+    .titleStyle {
+        font-size: 30px;
+    }
+</style>
